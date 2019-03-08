@@ -1,0 +1,88 @@
+apply plugin: 'com.android.library'
+apply plugin: 'com.novoda.bintray-release'//添加
+apply plugin: 'com.github.dcendents.android-maven'
+group='com.github.gyymz1993'
+
+android {
+    compileSdkVersion rootProject.ext.versions.compileSdkVersion
+    buildToolsVersion rootProject.ext.versions.buildToolsVersion
+
+    defaultConfig {
+        minSdkVersion rootProject.ext.versions.minSdkVersion
+        targetSdkVersion rootProject.ext.versions.targetSdkVersion
+        versionCode rootProject.ext.versions.versionCode
+        versionName rootProject.ext.versions.versionName
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        //MultiDex分包方法
+        multiDexEnabled true
+
+        //Arouter路由配置
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = [AROUTER_MODULE_NAME: project.getName()]
+                includeCompileClasspath = true
+            }
+        }
+
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    lintOptions {
+        abortOnError false
+    }
+
+    productFlavors {
+    }
+}
+
+dependencies {
+    api fileTree(include: ['*.jar'], dir: 'libs')
+    // -------------------- 以下4个库是必须依赖的 ----------------------------
+    /**  基本库 **/
+    api 'cn.bingoogolapple:bga-baseadapter:1.2.9@aar'
+    api 'com.github.bumptech.glide:glide:4.2.0'
+    api rootProject.ext.dependencies["appcompat_v7"]
+    api rootProject.ext.dependencies["support-v4"]
+    api rootProject.ext.dependencies["recyclerview-v7"]
+
+
+}
+
+
+publish {
+    userOrg = 'gyymz1993'//bintray.com用户名
+    groupId = 'com.github.gyymz1993'//jcenter上的路径
+    artifactId = 'NinePhotoUtils'//项目名称
+    publishVersion = 'v1.0.1' //版本号
+    desc = 'this is for NinePhotoLayoutUtils'//描述，不重要
+}
+
+task sourcesJar(type: Jar) {
+    from android.sourceSets.main.java.srcDirs
+    classifier = 'sources'
+}
+task javadoc(type: Javadoc) {
+    options.encoding = 'UTF-8'
+    source = 'src/main/java'
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+artifacts {
+    archives javadocJar
+    archives sourcesJar
+}
+
+/**
+ * gradlew clean build bintrayUpload -PbintrayUser=gyymz1993  -PbintrayKey=5034d09884878366fbd444d453ff05c290684076 -PdryRun=false
+ *
+ */
+

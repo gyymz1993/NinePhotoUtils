@@ -1,0 +1,92 @@
+apply plugin: 'com.android.library'
+//apply plugin: 'com.novoda.bintray-release'//添加
+//apply plugin: 'com.github.dcendents.android-maven'
+//group = 'com.github.gyymz1993'
+
+android {
+    compileSdkVersion rootProject.ext.versions.compileSdkVersion
+    buildToolsVersion rootProject.ext.versions.buildToolsVersion
+
+    defaultConfig {
+        minSdkVersion rootProject.ext.versions.minSdkVersion
+        targetSdkVersion rootProject.ext.versions.targetSdkVersion
+        versionCode rootProject.ext.versions.versionCode
+        versionName rootProject.ext.versions.versionName
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        //MultiDex分包方法
+        multiDexEnabled true
+
+        //Arouter路由配置
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = [AROUTER_MODULE_NAME: project.getName()]
+                includeCompileClasspath = true
+            }
+        }
+
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    lintOptions {
+        abortOnError false
+    }
+
+    productFlavors {
+    }
+}
+
+dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    // -------------------- 以下4个库是必须依赖的 ----------------------------
+    /**  基本库 **/
+   // api 'cn.bingoogolapple:bga-baseadapter:1.2.9@aar'
+    api 'com.github.gyymz1993:YangBaseUtils:v.1.0.1'
+    api 'com.github.gyymz1993:BGABaseAdapter:v1.0.1'
+
+}
+
+
+//publish {
+//    userOrg = 'gyymz1993'//bintray.com用户名
+//    groupId = 'com.github.gyymz1993'//jcenter上的路径
+//    artifactId = 'NinePhotoUtils'//项目名称
+//    publishVersion = 'v1.0.1' //版本号
+//    desc = 'this is for NinePhotoLayoutUtils'//描述，不重要
+//}
+
+
+//生成源文件
+task sourcesJar(type: Jar) {
+    from android.sourceSets.main.java.srcDirs
+    classifier = 'sources'
+}
+
+//生成文档
+task javadoc(type: Javadoc) {
+    source = android.sourceSets.main.java.srcDirs
+    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+    options.encoding "UTF-8"
+    options.charSet 'UTF-8'
+    options.author true
+    options.version true
+    failOnError false
+}
+
+tasks.withType(Javadoc) {
+    options.addStringOption('Xdoclint:none', '-quiet')
+    options.addStringOption('encoding', 'UTF-8')
+    options.addStringOption('charSet', 'UTF-8')
+}
+
+
+/**
+ * gradlew clean build bintrayUpload -PbintrayUser=gyymz1993  -PbintrayKey=5034d09884878366fbd444d453ff05c290684076 -PdryRun=false
+ *
+ */
+

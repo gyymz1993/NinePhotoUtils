@@ -12,7 +12,6 @@ buildscript {
         //数据库GreenDAO
         classpath 'org.greenrobot:greendao-gradle-plugin:3.2.2'
         classpath 'com.novoda:bintray-release:0.9'
-
         classpath 'com.github.dcendents:android-maven-gradle-plugin:2.1'
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
@@ -28,6 +27,9 @@ allprojects {
         maven { url "https://dl.bintray.com/gyymz1993/maven" }
         maven { url "https://novoda.bintray.com/snapshots" }
         maven { url "http://jcenter.bintray.com/" }
+        maven { url "https://conan.bintray.com" }
+
+       // $ conan remote add conan-transit https://conan-transit.bintray.com
 
         tasks.withType(Javadoc) {
             options{
